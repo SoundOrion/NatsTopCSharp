@@ -143,7 +143,13 @@ public class DisplayService
         }
 
         // テーブル出力（各列は自動的に内容に合わせた幅になり、NoWrapにより改行はされません）
-        AnsiConsole.Write(table);
+        var panel = new Panel(table)
+        {
+            Border = BoxBorder.None,
+            Padding = new Padding(2, 0, 0, 0)
+        };
+
+        AnsiConsole.Write(panel);
     }
 
     //public void RenderStats(Engine engine, Stats stats)
