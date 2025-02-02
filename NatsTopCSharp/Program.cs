@@ -18,10 +18,10 @@ class Program
                 logging.AddConsole(); // コンソールにログを出力（他のログは有効）
                 logging.SetMinimumLevel(LogLevel.Warning); // 警告以上のみ表示
             })
-            .ConfigureServices((context, services) =>
+            .ConfigureServices(async (context, services) =>
             {
                 // Options を IOptions<T> で登録
-                var options = Options.Parse(args);
+                var options = await Options.ParseAsync(args);
                 services.AddSingleton(options);
                 services.Configure<Options>(opt =>
                 {
