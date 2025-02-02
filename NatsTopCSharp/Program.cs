@@ -32,7 +32,7 @@ class Program
                 });
 
                 // HttpClient を DI に登録
-                services.AddHttpClient<Engine>(client =>
+                services.AddHttpClient("nats", client =>
             {
                 //client.Timeout = TimeSpan.FromSeconds(10);
                 //client.DefaultRequestHeaders.Add("User-Agent", "NatsTopCSharp");

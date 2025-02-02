@@ -40,7 +40,7 @@ public class Engine
 
     public Engine(IHttpClientFactory httpClientFactory, IOptions<Options> options)
     {
-        _httpClient = httpClientFactory.CreateClient();
+        _httpClient = httpClientFactory.CreateClient("nats");
 
         var option = options.Value;
         Host = option.Host;
