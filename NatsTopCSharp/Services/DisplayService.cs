@@ -95,7 +95,7 @@ public class DisplayService
                 string lang = conn.Lang;
                 string version = conn.Version;
                 string uptime = conn.Uptime;
-                string lastActivity = Utilities.FormatDateTime(conn.LastActivity);
+                string lastActivity = conn.LastActivity.FormatDateTime();
                 string subscriptions = engine.DisplaySubs ? (conn.Subs != null ? string.Join(", ", conn.Subs) : "") : "";
 
                 var row = new List<string>
@@ -173,7 +173,7 @@ public class DisplayService
                     sb.Append($"{Utilities.Nsize(engine.DisplayRawBytes, (long)cr.OutMsgsRate)}\t{Utilities.Nsize(engine.DisplayRawBytes, (long)cr.InMsgsRate)}\t");
                     sb.Append($"{Utilities.Psize(engine.DisplayRawBytes, (long)cr.OutBytesRate)}\t{Utilities.Psize(engine.DisplayRawBytes, (long)cr.InBytesRate)}\t");
                 }
-                sb.AppendLine($"{conn.Lang}\t{conn.Version}\t{conn.Uptime}\t{Utilities.FormatDateTime(conn.LastActivity)}");
+                sb.AppendLine($"{conn.Lang}\t{conn.Version}\t{conn.Uptime}\t{conn.LastActivity.FormatDateTime()}");
             }
         }
         return sb.ToString();

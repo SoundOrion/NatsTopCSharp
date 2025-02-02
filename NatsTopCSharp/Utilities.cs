@@ -61,7 +61,7 @@ public static class Utilities
         return $"{size / t:0.0}T";
     }
 
-    public static string FormatDateTime(string isoDateTime)
+    public static string FormatDateTime(this string isoDateTime)
     {
         try
         {

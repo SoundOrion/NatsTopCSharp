@@ -16,7 +16,6 @@ class Program
         var options = Options.Parse(args);
         serviceCollection.AddSingleton(options);
 
-
         // Engine、DisplayService、App を登録
         serviceCollection.AddSingleton(new Engine(options.Host, options.Port, options.Conns, options.Delay));
         serviceCollection.AddSingleton<DisplayService>();
