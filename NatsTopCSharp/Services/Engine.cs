@@ -30,21 +30,17 @@ public class Engine
     public bool ShowRates { get; set; } = false;
     public bool DisplayRawBytes { get; set; } = false;
     public bool LookupDNS { get; set; } = false;
+    public Stats LastStats { get; set; }
 
-    public Models.Stats LastStats { get; set; }
-    public Dictionary<ulong, Models.ConnInfo> LastConnz { get; set; } = new();
+    private Dictionary<ulong, Models.ConnInfo> LastConnz { get; set; } = new();
 
-    public HttpClient HttpClient { get; set; }
+    private readonly HttpClient _httpClient;
 
     private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-    //private readonly IHttpClientFactory _httpClientFactory;
-    //private readonly Options _options;
-
     public Engine(IHttpClientFactory httpClientFactory, IOptions<Options> options)
     {
-        //_httpClientFactory = httpClientFactory;
-        HttpClient = httpClientFactory.CreateClient();
+        _httpClient = httpClientFactory.CreateClient();
 
         var option = options.Value;
         Host = option.Host;
@@ -74,7 +70,7 @@ public class Engine
                 url += "&subs=1";
             }
         }
-        HttpResponseMessage response = await HttpClient.GetAsync(url);
+        HttpResponseMessage response = await _httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
         string body = await response.Content.ReadAsStringAsync();
         if (path == "/varz")
@@ -134,10 +130,9 @@ public class Engine
                 {
                     foreach (var conn in stats.Connz.Conns)
                     {
-                        Models.ConnRates cr = new Models.ConnRates();
-                        if (LastConnz.ContainsKey(conn.Cid))
+                        ConnRates cr = new ConnRates();
+                        if (LastConnz.TryGetValue(conn.Cid, out ConnInfo? lastConn))
                         {
-                            Models.ConnInfo lastConn = LastConnz[conn.Cid];
                             cr.InMsgsRate = (conn.InMsgs - lastConn.InMsgs);
                             cr.OutMsgsRate = (conn.OutMsgs - lastConn.OutMsgs);
                             cr.InBytesRate = (conn.InBytes - lastConn.InBytes);
