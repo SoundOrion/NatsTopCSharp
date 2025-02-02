@@ -20,12 +20,12 @@ public class DisplayService
 
         // サーバー情報は枠を使わず、プレーンなテキストとして出力
         var serverInfo = new StringBuilder();
-        serverInfo.AppendLine($"[bold]NATS server version:[/] {varz.Version} (uptime: {varz.Uptime}) {stats.Error}");
-        serverInfo.AppendLine($"[bold]Server:[/] {varz.Name}");
-        serverInfo.AppendLine($"[bold]  ID:[/]   {varz.ID}");
-        serverInfo.AppendLine($"[bold]  Load:[/]  CPU: {varz.CPU:F1}%  Memory: {Utilities.Psize(false, varz.Mem)}  Slow Consumers: {varz.SlowConsumers}");
-        serverInfo.AppendLine($"[bold]  In:[/]   Msgs: {Utilities.Nsize(engine.DisplayRawBytes, varz.InMsgs)}  Bytes: {Utilities.Psize(engine.DisplayRawBytes, varz.InBytes)}  Msgs/Sec: {stats.Rates?.InMsgsRate:F1}  Bytes/Sec: {Utilities.Psize(engine.DisplayRawBytes, (long)(stats.Rates?.InBytesRate ?? 0))}");
-        serverInfo.AppendLine($"[bold]  Out:[/]  Msgs: {Utilities.Nsize(engine.DisplayRawBytes, varz.OutMsgs)}  Bytes: {Utilities.Psize(engine.DisplayRawBytes, varz.OutBytes)}  Msgs/Sec: {stats.Rates?.OutMsgsRate:F1}  Bytes/Sec: {Utilities.Psize(engine.DisplayRawBytes, (long)(stats.Rates?.OutBytesRate ?? 0))}");
+        serverInfo.AppendLine($"NATS server version: {varz.Version} (uptime: {varz.Uptime}) {stats.Error}");
+        serverInfo.AppendLine($"Server: {varz.Name}");
+        serverInfo.AppendLine($"  ID:   {varz.ID}");
+        serverInfo.AppendLine($"  Load:  CPU: {varz.CPU:F1}%  Memory: {Utilities.Psize(false, varz.Mem)}  Slow Consumers: {varz.SlowConsumers}");
+        serverInfo.AppendLine($"  In:   Msgs: {Utilities.Nsize(engine.DisplayRawBytes, varz.InMsgs)}  Bytes: {Utilities.Psize(engine.DisplayRawBytes, varz.InBytes)}  Msgs/Sec: {stats.Rates?.InMsgsRate:F1}  Bytes/Sec: {Utilities.Psize(engine.DisplayRawBytes, (long)(stats.Rates?.InBytesRate ?? 0))}");
+        serverInfo.AppendLine($"  Out:  Msgs: {Utilities.Nsize(engine.DisplayRawBytes, varz.OutMsgs)}  Bytes: {Utilities.Psize(engine.DisplayRawBytes, varz.OutBytes)}  Msgs/Sec: {stats.Rates?.OutMsgsRate:F1}  Bytes/Sec: {Utilities.Psize(engine.DisplayRawBytes, (long)(stats.Rates?.OutBytesRate ?? 0))}");
         serverInfo.AppendLine($"");
         serverInfo.AppendLine($"Connections Polled: {stats.Connz.NumConns}");
 
