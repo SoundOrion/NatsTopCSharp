@@ -7,6 +7,9 @@ using Spectre.Console;
 
 namespace NatsTopCSharp;
 
+/// <summary>
+/// App クラスはアプリケーションのメインループを実装し、DIで注入された Options、Engine、DisplayService を利用して処理を実行する
+/// </summary>
 public class App
 {
     private readonly Options _options;

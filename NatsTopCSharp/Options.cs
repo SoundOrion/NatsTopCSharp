@@ -2,6 +2,10 @@
 
 namespace NatsTopCSharp;
 
+/// <summary>
+/// コマンドラインオプション
+/// コマンドライン引数のパース用クラス
+/// </summary>
 public class Options
 {
     public string Host { get; set; } = "127.0.0.1";

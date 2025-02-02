@@ -12,6 +12,9 @@ using System.Reflection;
 
 namespace NatsTopCSharp.Services;
 
+/// <summary>
+/// NATS サーバーから統計情報を取得・計算するエンジンクラス
+/// </summary>
 public class Engine
 {
     public string Host { get; set; }

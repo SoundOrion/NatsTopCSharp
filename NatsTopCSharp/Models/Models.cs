@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace NatsTopCSharp.Models;
 
+/// <summary>
+/// モデルクラス群をひとまとめ
+/// </summary>
 public class Varz
 {
     [JsonPropertyName("cpu")]

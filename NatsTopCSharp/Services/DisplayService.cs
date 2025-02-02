@@ -6,8 +6,14 @@ using NatsTopCSharp.Models;
 
 namespace NatsTopCSharp.Services;
 
+/// <summary>
+/// DisplayService は Spectre.Console を用いて統計情報をリッチに表示する処理と、従来のテキスト／CSV出力用メソッドを提供
+/// </summary>
 public class DisplayService
 {
+    /// <summary>
+    /// Spectre.Console を使って最新の統計情報を表示する
+    /// </summary>
     public void RenderStats(Engine engine, Stats stats)
     {
         Varz varz = stats.Varz;
@@ -136,6 +142,10 @@ public class DisplayService
         AnsiConsole.Write(table);
     }
 
+    /// <summary>
+    /// プレーンテキスト版の統計情報表示（元 Golang の generateParagraphPlainText 相当）
+    /// ※CSV出力以外の場合に利用できます
+    /// </summary>
     public string GenerateParagraphPlainText(Engine engine, Stats stats)
     {
         Varz varz = stats.Varz;
@@ -179,6 +189,9 @@ public class DisplayService
         return sb.ToString();
     }
 
+    /// <summary>
+    /// CSV 出力版（出力区切り文字を指定する場合）
+    /// </summary>
     public string GenerateParagraphCSV(Engine engine, Stats stats, string delimiter)
     {
         Varz varz = stats.Varz;
