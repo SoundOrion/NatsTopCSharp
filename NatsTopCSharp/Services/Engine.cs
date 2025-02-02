@@ -9,6 +9,9 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using NatsTopCSharp.Models;
 
 namespace NatsTopCSharp.Services;
 
@@ -30,45 +33,33 @@ public class Engine
 
     public Models.Stats LastStats { get; set; }
     public Dictionary<ulong, Models.ConnInfo> LastConnz { get; set; } = new();
+
     public HttpClient HttpClient { get; set; }
 
     private static readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-    // DI用のパラメータレスコンストラクタ
-    public Engine() { }
+    //private readonly IHttpClientFactory _httpClientFactory;
+    //private readonly Options _options;
 
-    public Engine(string host, int port, int conns, int delay)
+    public Engine(IHttpClientFactory httpClientFactory, IOptions<Options> options)
     {
-        Host = host;
-        Port = port;
-        Conns = conns;
-        Delay = delay;
+        //_httpClientFactory = httpClientFactory;
+        HttpClient = httpClientFactory.CreateClient();
+
+        var option = options.Value;
+        Host = option.Host;
+        Port = option.Port;
+        Conns = option.Conns;
+        Delay = option.Delay;
     }
 
     public void SetupHTTP()
     {
-        HttpClient = new HttpClient();
         Uri = $"http://{Host}:{Port}";
     }
 
-    public void SetupHTTPS(string caCertOpt, string certOpt, string keyOpt, bool skipVerify)
+    public void SetupHTTPS()
     {
-        HttpClientHandler handler = new HttpClientHandler();
-        if (skipVerify)
-        {
-            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-        }
-        if (!string.IsNullOrEmpty(caCertOpt))
-        {
-            var caCert = new X509Certificate2(File.ReadAllBytes(caCertOpt));
-            handler.ClientCertificates.Add(caCert);
-        }
-        if (!string.IsNullOrEmpty(certOpt) && !string.IsNullOrEmpty(keyOpt))
-        {
-            var cert = new X509Certificate2(certOpt);
-            handler.ClientCertificates.Add(cert);
-        }
-        HttpClient = new HttpClient(handler);
         Uri = $"https://{Host}:{Port}";
     }
 
@@ -88,12 +79,12 @@ public class Engine
         string body = await response.Content.ReadAsStringAsync();
         if (path == "/varz")
         {
-            Models.Varz varz = JsonSerializer.Deserialize<Models.Varz>(body, jsonOptions);
+            Varz varz = JsonSerializer.Deserialize<Varz>(body, jsonOptions);
             return varz;
         }
         else if (path.StartsWith("/connz"))
         {
-            Models.Connz connz = JsonSerializer.Deserialize<Models.Connz>(body, jsonOptions);
+            Connz connz = JsonSerializer.Deserialize<Connz>(body, jsonOptions);
             return connz;
         }
         else
@@ -101,18 +92,18 @@ public class Engine
             throw new Exception($"invalid path '{path}'");
         }
     }
-    public async Task<Models.Varz> RequestVarz() => (Models.Varz)await Request("/varz");
+    public async Task<Varz> RequestVarz() => (Varz)await Request("/varz");
 
-    public async Task<Models.Stats> FetchStats()
+    public async Task<Stats> FetchStats()
     {
-        Models.Stats stats = new Models.Stats();
+        Stats stats = new Stats();
         try
         {
             Task<object> varzTask = Request("/varz");
             Task<object> connzTask = Request("/connz");
             await Task.WhenAll(varzTask, connzTask);
-            stats.Varz = (Models.Varz)varzTask.Result;
-            stats.Connz = (Models.Connz)connzTask.Result;
+            stats.Varz = (Varz)varzTask.Result;
+            stats.Connz = (Connz)connzTask.Result;
         }
         catch (Exception ex)
         {
@@ -130,13 +121,13 @@ public class Engine
                 long inBytesDelta = stats.Varz.InBytes - LastStats.Varz.InBytes;
                 long outBytesDelta = stats.Varz.OutBytes - LastStats.Varz.OutBytes;
 
-                Models.Rates rates = new Models.Rates
+                Rates rates = new Rates
                 {
                     InMsgsRate = inMsgsDelta / tdelta.TotalSeconds,
                     OutMsgsRate = outMsgsDelta / tdelta.TotalSeconds,
                     InBytesRate = inBytesDelta / tdelta.TotalSeconds,
                     OutBytesRate = outBytesDelta / tdelta.TotalSeconds,
-                    Connections = new Dictionary<ulong, Models.ConnRates>()
+                    Connections = []
                 };
 
                 if (stats.Connz?.Conns != null)

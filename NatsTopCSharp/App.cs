@@ -36,7 +36,7 @@ public class App
         if (_options.HttpsPort != 0)
         {
             _engine.Port = _options.HttpsPort;
-            _engine.SetupHTTPS(_options.CACert, _options.Cert, _options.Key, _options.SkipVerify);
+            _engine.SetupHTTPS();
         }
         else
         {
