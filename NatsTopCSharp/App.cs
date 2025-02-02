@@ -23,7 +23,7 @@ public class App
         _displayService = displayService;
     }
 
-    public async Task RunAsync(string displayMode)
+    public async Task RunAsync(bool isSpectre)
     {
         // バージョン表示
         if (_options.ShowVersion)
@@ -90,7 +90,7 @@ public class App
             {
                 Console.SetCursorPosition(0, 0); // カーソルを左上に移動
 
-                if (displayMode == "spectre")
+                if (isSpectre)
                 {
                     AnsiConsole.Clear();
                     _displayService.RenderStats(_engine, _engine.LastStats);

@@ -30,7 +30,7 @@ public class DisplayService
         serverInfo.AppendLine($"Connections Polled: {stats.Connz.NumConns}");
 
         // 改行はそのまま使用（Spectre.Console の MarkupLine でプレーンテキストとして表示）
-        AnsiConsole.MarkupLine(serverInfo.ToString());
+        AnsiConsole.Markup(serverInfo.ToString());
 
         // テーブルを生成（枠なし・各列の内容は折り返さない設定）
         var table = new Table

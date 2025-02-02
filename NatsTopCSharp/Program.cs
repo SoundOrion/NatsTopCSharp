@@ -76,6 +76,6 @@ class Program
 
         // DIで解決したAppクラスを実行
         var app = host.Services.GetRequiredService<App>();
-        await app.RunAsync(displayMode: "spectre");
+        await app.RunAsync(true);
     }
 }
