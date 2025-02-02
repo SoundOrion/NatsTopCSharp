@@ -90,8 +90,8 @@ public class DisplayService
                 else
                 {
                     Rates rates = stats.Rates;
-                    ConnRates cr = (rates != null && rates.Connections.ContainsKey(conn.Cid))
-                        ? rates.Connections[conn.Cid] : new ConnRates();
+                    ConnRates cr = (rates != null && rates.Connections.TryGetValue(conn.Cid, out ConnRates? value))
+                        ? value : new ConnRates();
                     colMsgsTo = Utilities.Nsize(engine.DisplayRawBytes, (long)cr.OutMsgsRate);
                     colMsgsFrom = Utilities.Nsize(engine.DisplayRawBytes, (long)cr.InMsgsRate);
                     colBytesTo = Utilities.Psize(engine.DisplayRawBytes, (long)cr.OutBytesRate);
@@ -178,8 +178,8 @@ public class DisplayService
                 else
                 {
                     Rates rates = stats.Rates;
-                    ConnRates cr = (rates != null && rates.Connections.ContainsKey(conn.Cid))
-                        ? rates.Connections[conn.Cid] : new ConnRates();
+                    ConnRates cr = (rates != null && rates.Connections.TryGetValue(conn.Cid, out ConnRates? value))
+                        ? value : new ConnRates();
                     sb.Append($"{Utilities.Nsize(engine.DisplayRawBytes, (long)cr.OutMsgsRate)}\t{Utilities.Nsize(engine.DisplayRawBytes, (long)cr.InMsgsRate)}\t");
                     sb.Append($"{Utilities.Psize(engine.DisplayRawBytes, (long)cr.OutBytesRate)}\t{Utilities.Psize(engine.DisplayRawBytes, (long)cr.InBytesRate)}\t");
                 }
@@ -218,14 +218,14 @@ public class DisplayService
         foreach (var conn in stats.Connz.Conns)
         {
             string hostname = engine.LookupDNS ? Utilities.DNSLookup(conn.IP) : $"{conn.IP}:{conn.Port}";
-            List<string> row = new()
-            {
+            List<string> row =
+            [
                 hostname,
                 conn.Cid.ToString(),
                 conn.Name ?? "",
                 conn.NumSubs.ToString(),
                 Utilities.Nsize(engine.DisplayRawBytes, conn.Pending)
-            };
+            ];
 
             if (!engine.ShowRates)
             {
@@ -237,8 +237,8 @@ public class DisplayService
             else
             {
                 Rates rates = stats.Rates;
-                ConnRates cr = (rates != null && rates.Connections.ContainsKey(conn.Cid))
-                    ? rates.Connections[conn.Cid] : new ConnRates();
+                ConnRates cr = (rates != null && rates.Connections.TryGetValue(conn.Cid, out ConnRates? value))
+                    ? value : new ConnRates();
                 row.Add(Utilities.Nsize(engine.DisplayRawBytes, (long)cr.OutMsgsRate));
                 row.Add(Utilities.Nsize(engine.DisplayRawBytes, (long)cr.InMsgsRate));
                 row.Add(Utilities.Psize(engine.DisplayRawBytes, (long)cr.OutBytesRate));
